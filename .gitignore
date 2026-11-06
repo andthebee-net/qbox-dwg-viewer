@@ -1,0 +1,4 @@
+node_modules/
+public/workers/
+public/cad-data/
+dist/

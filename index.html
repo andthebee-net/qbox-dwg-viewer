@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later — 라이선스 · 소스: licenses.html -->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex">
+    <title>도면 뷰어</title>
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #000; font-family: system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; }
+      #cad { position: absolute; inset: 0; }
+      #bar { position: absolute; top: 10px; right: 10px; z-index: 10; display: flex; gap: 6px; }
+      #bar button { border: 1px solid #5b6472; background: #1f2630; color: #e6edf6; border-radius: 6px; padding: 5px 10px; font-size: 13px; cursor: pointer; }
+      #bar button:hover { background: #2b3542; }
+      #bar button:focus-visible { outline: 2px solid #58b3f0; outline-offset: 2px; }
+      #note { position: absolute; inset: 0; z-index: 5; display: flex; align-items: center; justify-content: center; padding: 24px; color: #c9d4e2; font-size: 14px; text-align: center; pointer-events: none; }
+      #note[hidden] { display: none; }
+      #legal { position: absolute; right: 10px; bottom: 8px; z-index: 10; color: #8a96a6; font-size: 11px; line-height: 1.4; white-space: nowrap; text-decoration: none; }
+      #legal:hover, #legal:focus-visible { color: #e6edf6; text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <div id="cad"></div>
+    <div id="bar" hidden><button id="fit" type="button">전체 보기</button></div>
+    <p id="note">도면을 불러오는 중…</p>
+    <a id="legal" href="licenses.html" target="_blank" rel="noopener">라이선스 · 소스</a>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

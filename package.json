@@ -1,0 +1,32 @@
+{
+  "name": "qbox-dwg-viewer",
+  "version": "0.1.0",
+  "description": "브라우저에서 DWG·DXF 도면을 여는 독립 뷰어 페이지 (QBOX 웹하드가 iframe 으로 끼워 쓴다)",
+  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/andthebee-net/qbox-dwg-viewer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/andthebee-net/qbox-dwg-viewer.git"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "assets": "node scripts/copy-assets.mjs",
+    "dev": "pnpm assets && vite",
+    "build": "pnpm assets && vite build"
+  },
+  "dependencies": {
+    "@fontsource/nanum-gothic": "5.3.0",
+    "@mlightcad/cad-simple-viewer": "1.7.8",
+    "@mlightcad/data-model": "1.15.21",
+    "@mlightcad/libredwg-converter": "3.15.22",
+    "@mlightcad/mtext-parser": "1.5.7",
+    "@mlightcad/mtext-renderer": "0.13.7",
+    "@mlightcad/three-renderer": "1.7.8",
+    "lodash-es": "4.17.21",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "vite": "8.3.6"
+  }
+}
