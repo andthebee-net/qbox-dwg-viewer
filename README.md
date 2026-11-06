@@ -2,8 +2,11 @@
 
 브라우저에서 DWG·DXF 도면을 여는 독립 뷰어 페이지입니다. 서버 변환 없이 브라우저가 파일을 직접 읽어 그립니다.
 
-다른 웹 프로그램은 이 페이지를 iframe 으로 끼워 넣고 메시지로 열 파일의 주소만 넘깁니다(QBOX 웹하드가 이렇게 씁니다).
-이 페이지는 끼워 넣는 쪽의 코드를 들여오지 않고, 끼워 넣는 쪽도 이 페이지의 코드를 들여오지 않습니다.
+두 가지로 씁니다.
+
+- **혼자 열기** — 페이지 주소를 바로 열면 [파일 열기] 또는 끌어 놓기로 PC 의 도면을 엽니다. 파일은 어디로도 보내지 않습니다.
+- **끼워 넣기** — 다른 웹 프로그램이 이 페이지를 iframe 으로 끼워 넣고 메시지로 열 파일의 주소만 넘깁니다(QBOX 웹하드가 이렇게 씁니다).
+  이 페이지는 끼워 넣는 쪽의 코드를 들여오지 않고, 끼워 넣는 쪽도 이 페이지의 코드를 들여오지 않습니다.
 
 ## 라이선스
 
@@ -17,7 +20,7 @@ DWG 해석에 [GNU LibreDWG](https://www.gnu.org/software/libredwg/) 의 웹 빌
 `@mlightcad/libredwg-converter`, GPL-3.0)를 쓰기 때문에 이 뷰어 전체를 GPL 로 공개합니다.
 이 저장소가 배포되는 뷰어 페이지의 소스 전부입니다(아래 서드파티 패키지는 고정한 판을 `pnpm install` 로 받습니다).
 
-배포되는 페이지에는 고지가 같이 나갑니다 — 화면 왼쪽 아래 '라이선스 · 소스' 링크(`licenses.html`), `LICENSE.txt`,
+배포되는 페이지에는 고지가 같이 나갑니다 — 화면 오른쪽 아래 '라이선스 · 소스' 링크(`licenses.html`), `LICENSE.txt`,
 `THIRD-PARTY-NOTICES.txt`, JS 번들 머리의 한 줄 고지. 모두 빌드할 때 설치된 패키지에서 읽어 만듭니다(`scripts/notices.mjs`).
 
 ### 고지에 들어가는 값
@@ -37,7 +40,7 @@ Node 22 이상 · pnpm 9 이상.
 ```bash
 pnpm install --frozen-lockfile --ignore-scripts
 pnpm build
-pnpm dev       # http://localhost:5177 (끼워 넣는 창 없이 뷰어만 — 파일은 메시지로 받아야 열립니다)
+pnpm dev       # http://localhost:5177 (혼자 열기 화면 — '라이선스 · 소스' 페이지는 빌드 결과물에만 있습니다)
 ```
 
 결과물 위치:
@@ -54,12 +57,12 @@ pnpm dev       # http://localhost:5177 (끼워 넣는 창 없이 뷰어만 — �
 ## 끼워 넣는 방법 (메시지 프로토콜)
 
 ```
-끼워 넣는 쪽 → 뷰어   { type: 'qbox-dwg:open', url, name }
-뷰어 → 끼워 넣는 쪽   { type: 'qbox-dwg:ready' }
-                      { type: 'qbox-dwg:state', state: 'loading' | 'done' | 'error', message? }
+끼워 넣는 쪽 → 뷰어   { type: 'dwg-viewer:open', url, name }
+뷰어 → 끼워 넣는 쪽   { type: 'dwg-viewer:ready' }
+                      { type: 'dwg-viewer:state', state: 'loading' | 'done' | 'error', message? }
 ```
 
-- 뷰어는 `ready` 를 보낸 뒤 `open` 을 기다립니다. `url` 은 뷰어가 인증 정보 없이(`credentials: 'omit'`) 직접 받을 수 있는 주소,
+- 끼워 넣는 쪽은 `<iframe src="…/index.html">` 로 이 페이지를 띄웁니다. 뷰어는 `ready` 를 보낸 뒤 `open` 을 기다립니다. `url` 은 뷰어가 인증 정보 없이(`credentials: 'omit'`) 직접 받을 수 있는 주소,
   `name` 은 파일 이름(확장자로 DWG · DXF 를 가립니다)입니다.
 - 같은 오리진의 창이 보낸 메시지만 받습니다 — 다른 사이트가 이 페이지를 끼워 넣어 파일을 열게 하지 못합니다.
 - 주고받는 것은 주소 · 이름 · 상태 글자뿐입니다. 도면 데이터나 내부 자료 구조는 넘기지 않습니다.
