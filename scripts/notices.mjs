@@ -4,7 +4,7 @@
 import { existsSync, readdirSync, readFileSync, realpathSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { COPYRIGHT, SOURCE_URL } from '../source-offer.config.mjs'
+import { COPYRIGHT, SOURCE_URL, UPSTREAM_MIRRORS } from '../source-offer.config.mjs'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const readJson = file => JSON.parse(readFileSync(file, 'utf8'))
@@ -37,10 +37,21 @@ function repositoryUrl(pkg) {
   return /^https?:\/\//.test(url) ? url : `https://github.com/${url.replace(/^github:/, '')}`
 }
 
+/** 보관본 주소(판 태그까지) — 설치된 판과 설정의 판이 어긋나면 틀린 소스를 가리키게 되므로 빌드를 멈춘다 */
+function mirrorOf(pkg) {
+  const entry = UPSTREAM_MIRRORS.find(item => item.package === pkg.name)
+  if (!entry)
+    return ''
+  if (entry.version !== pkg.version)
+    throw new Error(`${pkg.name} 설치 판 ${pkg.version} ≠ 보관본 설정 ${entry.version} — 포크를 맞추고 source-offer.config.mjs 의 UPSTREAM_MIRRORS 수정 필요`)
+  return `${entry.url}/tree/${entry.tag}`
+}
+
 function describe(dir) {
   const pkg = readJson(join(dir, 'package.json'))
   const licenseFile = readdirSync(dir).find(file => /^(?:licen[sc]e|copying)/i.test(file))
   return {
+    mirror: mirrorOf(pkg),
     dir,
     pkg,
     name: pkg.name,
@@ -81,7 +92,8 @@ function thirdPartyText(packages) {
   ]
   const body = packages.map((p) => {
     const text = /^GPL-3\.0/.test(p.license) ? '(라이선스 전문: LICENSE.txt — GNU General Public License version 3)' : p.licenseText || '(패키지에 라이선스 파일 없음 — 위 저장소 참조)'
-    return [`${'='.repeat(78)}`, `${p.name} ${p.version}`, `License: ${p.license}`, `Source: ${p.repository}`, '', text, ''].join('\n')
+    const source = p.mirror ? [`Source: ${p.repository}`, `Source (보관본): ${p.mirror}`] : [`Source: ${p.repository}`]
+    return [`${'='.repeat(78)}`, `${p.name} ${p.version}`, `License: ${p.license}`, ...source, '', text, ''].join('\n')
   })
   return `${[...head, ...body].join('\n')}\n`
 }
@@ -90,7 +102,7 @@ function thirdPartyText(packages) {
 function labelRows(scripts, byName) {
   const upstream = (name) => {
     const p = byName.get(name)
-    return p ? { license: p.license, source: p.repository, version: `${p.name} ${p.version}` } : { license: 'UNKNOWN', source: '', version: name }
+    return p ? { license: p.license, source: p.repository, mirror: p.mirror, version: `${p.name} ${p.version}` } : { license: 'UNKNOWN', source: '', mirror: '', version: name }
   }
   const converter = upstream('@mlightcad/libredwg-converter')
   const wasm = upstream('@mlightcad/libredwg-web')
@@ -98,8 +110,8 @@ function labelRows(scripts, byName) {
   const font = upstream('@fontsource/nanum-gothic')
   return [
     ...scripts.map(file => ({ file, license: own.license, source: SOURCE_URL, note: `${own.name} ${own.version} (서드파티 고지의 패키지를 묶은 번들)` })),
-    { file: 'workers/libredwg-parser-worker.js', license: converter.license, source: converter.source, note: converter.version },
-    { file: 'workers/libredwg-web.wasm', license: wasm.license, source: wasm.source, note: `${wasm.version} (LibreDWG 웹 빌드)` },
+    { file: 'workers/libredwg-parser-worker.js', license: converter.license, source: converter.source, mirror: converter.mirror, note: converter.version },
+    { file: 'workers/libredwg-web.wasm', license: wasm.license, source: wasm.source, mirror: wasm.mirror, note: `${wasm.version} (LibreDWG 웹 빌드)` },
     { file: 'workers/mtext-renderer-worker.js', license: mtext.license, source: mtext.source, note: mtext.version },
     { file: 'cad-data/fonts/nanumgothic.woff', license: font.license, source: font.source, note: `${font.version} (나눔고딕)` },
   ]
@@ -111,7 +123,7 @@ function licensesHtml(scripts, packages) {
         <tr>
           <td><a href="${escapeHtml(row.file)}">${escapeHtml(row.file)}</a><br><small>${escapeHtml(row.note)}</small></td>
           <td>${link(LICENSE_URLS[row.license] ?? '', row.license)}</td>
-          <td>${row.source ? link(row.source) : '소스 주소 미설정'}</td>
+          <td>${row.source ? link(row.source) : '소스 주소 미설정'}${row.mirror ? `<br><small>보관본: ${link(row.mirror)}</small>` : ''}</td>
         </tr>`).join('')
   const source = SOURCE_URL
     ? `<p>소스 코드: ${link(SOURCE_URL)} (이 판의 태그 <code>v${escapeHtml(own.version)}</code>)</p>`

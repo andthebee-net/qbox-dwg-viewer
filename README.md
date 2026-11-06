@@ -30,6 +30,7 @@ DWG 해석에 [GNU LibreDWG](https://www.gnu.org/software/libredwg/) 의 웹 빌
 - `SOURCE_URL` — 이 소스를 받을 수 있는 공개 주소(환경 변수 `DWG_VIEWER_SOURCE_URL` 로도 줄 수 있음).
   고쳐서 배포하는 경우 고친 소스를 받을 수 있는 주소로 바꿉니다. 비어 있으면 빌드가 경고합니다.
 - `COPYRIGHT` — 고지에 표시하는 저작권 표시.
+- `UPSTREAM_MIRRORS` — 상류 GPL 소스 보관본의 주소와 판 태그. 설치된 패키지 판과 어긋나면 빌드가 멈춥니다.
 
 배포한 판과 같은 판의 소스를 받을 수 있어야 합니다 — 배포할 때마다 공개 저장소에 `v{version}` 태그를 둡니다.
 
@@ -90,6 +91,9 @@ pnpm dev       # http://localhost:5177 (혼자 열기 화면 — '라이선스 �
 | `@fontsource/nanum-gothic` (나눔고딕) | 5.3.0 | OFL-1.1 | `cad-data/fonts/nanumgothic.woff` | [fontsource/font-files](https://github.com/fontsource/font-files) |
 
 워커 두 개와 wasm 은 위 패키지가 배포한 파일을 고치지 않고 그대로 옮긴 것입니다.
+GPL 패키지 둘의 소스는 상류 저장소가 없어져도 받을 수 있게 포크해 두었습니다 —
+[andthebee-net/libredwg-web](https://github.com/andthebee-net/libredwg-web) · [andthebee-net/realdwg-web](https://github.com/andthebee-net/realdwg-web)
+(쓰는 판의 태그는 `source-offer.config.mjs` 의 `UPSTREAM_MIRRORS`).
 글꼴은 재배포 가능한 나눔고딕 하나만 같이 배포하고, 외부 글꼴 저장소(CDN)에는 접속하지 않습니다.
 
 ## 알려진 한계
