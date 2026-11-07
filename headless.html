@@ -1,0 +1,18 @@
+<!doctype html>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later — 라이선스 · 소스: licenses.html -->
+<!-- 헤드리스 렌더용 진입 화면 — 서버가 도면을 쪽 그림(PDF 재료)으로 바꿀 때 브라우저 자동화가 연다. 사람이 보는 화면이 아니다. -->
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="robots" content="noindex">
+    <title>도면 렌더</title>
+    <style>
+      html, body { margin: 0; background: #fff; }
+      #cad { position: relative; width: 1600px; height: 1200px; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <div id="cad"></div>
+    <script type="module" src="/src/headless.js"></script>
+  </body>
+</html>

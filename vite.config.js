@@ -37,6 +37,8 @@ export default defineConfig({
     emptyOutDir: true,
     target: 'es2022',
     chunkSizeWarningLimit: 4000,
+    // 두 진입 — 사람이 보는 뷰어(index.html)와 서버 렌더용(headless.html, tools/dwg-render 가 연다)
+    rollupOptions: { input: { index: 'index.html', headless: 'headless.html' } },
   },
   server: { port: 5177, strictPort: true },
 })

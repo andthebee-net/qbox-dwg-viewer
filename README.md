@@ -34,6 +34,13 @@ DWG 해석에 [GNU LibreDWG](https://www.gnu.org/software/libredwg/) 의 웹 빌
 
 배포한 판과 같은 판의 소스를 받을 수 있어야 합니다 — 배포할 때마다 공개 저장소에 `v{version}` 태그를 둡니다.
 
+## 헤드리스 렌더 진입 (`headless.html` · `src/headless.js`)
+
+서버가 도면을 PDF 사본으로 바꿀 때 브라우저 자동화가 여는 화면이다(사람이 보는 화면이 아니다). `window.qboxHeadless` 로
+`open(url, name)`(배치 목록) · `show(btrId, width, height)`(그 배치를 흰 배경으로 맞춰 그린다) · `canvasRect()` 를 제공한다.
+QBOX 쪽에서는 `tools/dwg-render/render.mjs`(puppeteer)가 임시 정적 서버로 이 빌드와 도면을 주고 배치마다 쪽 그림을 찍는다.
+같은 해석기 · 같은 글꼴을 쓰므로 결과는 웹 뷰어와 같고, GPL 코드는 그 서버 안에서만 돈다.
+
 ## 빌드
 
 Node 22 이상 · pnpm 9 이상.

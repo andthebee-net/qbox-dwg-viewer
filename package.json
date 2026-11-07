@@ -1,6 +1,6 @@
 {
   "name": "qbox-dwg-viewer",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "브라우저에서 DWG·DXF 도면을 여는 독립 뷰어 페이지 — 혼자 열어 쓰거나 다른 웹 프로그램이 iframe 으로 끼워 쓴다",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/andthebee-net/qbox-dwg-viewer",
